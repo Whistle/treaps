@@ -42,6 +42,21 @@ int show(struct treape *e) {
 	return 0;
 }
 
+struct treape *find(struct treap *t, int value) {
+	struct treape *e=0;
+	if(t ==0)
+		return 0;
+	e=t->root;
+	while(e) {
+		if(e->value==value)
+			return e;
+		else if(e->value>value)
+			e=e->left;
+		else
+			e=e->right;
+	}
+	return 0;
+}
 
 int lrotate(struct treap *t, struct treape *e) {
 	struct treape *parent=e->parent;

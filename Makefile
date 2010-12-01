@@ -8,7 +8,7 @@ OBJS := treap.o
 all: $(PROG)
 
 $(PROG): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^ treap.c
+	$(CC) $(LDFLAGS) -o $@ $^
 
 clean:
 	rm -rf $(PROG) $(OBJS)
