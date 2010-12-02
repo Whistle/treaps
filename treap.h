@@ -11,9 +11,7 @@ struct treap{
 };
 
 
-
 /* Hilffunktionen */
-
 int is_leaf(struct treape *e) {
 	if(e==0)
 		return -1;
@@ -31,40 +29,13 @@ int is_left_child(struct treape *e) {
 		return 0;
 }
 
-/* Einfache Ausgabe des Baumes */
-
-int show(struct treape *e) {
-	if(e==0)
-		return 0;
-	show(e->left);
-	printf("Adress: 0x%x Value: %d Priority: %2d ParentAdr: 0x%x\n", (int)e, e->value, e->prior, (int)e->parent);
-	show(e->right);
-	return 0;
-}
-
-struct treape *find(struct treap *t, int value) {
-	struct treape *e=0;
-	if(t ==0)
-		return 0;
-	e=t->root;
-	while(e) {
-		if(e->value==value)
-			return e;
-		else if(e->value>value)
-			e=e->left;
-		else
-			e=e->right;
-	}
-	return 0;
-}
-
 int lrotate(struct treap *t, struct treape *e) {
 	struct treape *parent=e->parent;
 	struct treape *child=e->right;
 	struct treape *two=child->left;
 
 	printf("Rotiere nach links\n");
-	
+
 	if(parent) {
 		if(e==parent->left)
 			parent->left=child;
@@ -107,7 +78,60 @@ int rrotate(struct treap *t, struct treape *e) {
 		two->parent=e;
 	return 0;
 }
+/* Einfache Ausgabe des Baumes */
 
+int show(struct treape *e) {
+	if(e==0)
+		return 0;
+	show(e->left);
+	printf("Adress: 0x%x Value: %d Priority: %2d ParentAdr: 0x%x\n", (int)e, e->value, e->prior, (int)e->parent);
+	show(e->right);
+	return 0;
+}
+
+struct treape *find(struct treap *t, int value) {
+	struct treape *e=0;
+	if(t ==0)
+		return 0;
+	e=t->root;
+	while(e) {
+		if(e->value==value)
+			return e;
+		else if(e->value>value)
+			e=e->left;
+		else
+			e=e->right;
+	}
+	return 0;
+}
+
+int delete(struct treap *t, int value) {
+	struct treape *e=find(t,value);
+	if(e==0)
+		return 0;
+	printf("Loesche die %d\n", value);
+	while(is_leaf(e)==0) {
+		if(e->left && e->right) {
+			if(e->left->prior > e->right->prior) {
+				rrotate(t, e);
+			} else {
+				lrotate(t, e);
+			}
+		} else if(e->left && !e->right) {
+			rrotate(t, e);
+		} else {
+			lrotate(t, e);
+		}
+	}
+	if(is_left_child(e)) {
+		e->parent->left=0;
+		free(e);
+	} else {
+		e->parent->right=0;
+		free(e);
+	}
+	return 0;
+}
 
 int adjust_position(struct treap *t, struct treape *e) {
 	while(e->prior > e->parent->prior) {
@@ -123,7 +147,6 @@ int adjust_position(struct treap *t, struct treape *e) {
 	}
 	return 0;
 }
-
 
 int insert(struct treap *t, int value, int prior) {
 	struct treape *e=t->root;
