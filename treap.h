@@ -1,3 +1,5 @@
+int null_count=0;
+
 struct treape {
 	int value;
 	int prior;
@@ -27,6 +29,18 @@ int is_left_child(struct treape *e) {
 		return 1;
 	else
 		return 0;
+}
+
+int has_brother(struct treape *e) {
+	if(e==0)
+		return 0;
+	if(e->parent==0)
+		return 0;
+	if(is_left_child(e) && e->parent->right!=0)
+		return 1;
+	if(!is_left_child(e) && e->parent->left!=0)
+		return 1;
+	return 0;
 }
 
 int lrotate(struct treap *t, struct treape *e) {
@@ -188,5 +202,41 @@ int insert(struct treap *t, int value, int prior) {
 	}
 	printf("Fuege eine %d ein\n", value);
 	adjust_position(t,newe);
+	return 0;
+}
+
+int build_dottree(FILE *fd, struct treape *e) {
+	if(fd==0)
+		return -1;
+	if(e==0) {
+		return 0;
+	}
+	if(e->left) {
+		fprintf(fd, "%d -> %d;\n", e->value, e->left->value);
+		build_dottree(fd, e->left);
+	} else {
+		null_count++;
+		fprintf(fd, "null%d [shape=none, style=invisible];\n", null_count);
+		fprintf(fd, "%d -> null%d\n", e->value, null_count);
+	}
+	if(e->right) {
+		fprintf(fd, "%d -> %d;\n", e->value,  e->right->value);
+		build_dottree(fd, e->right);
+	} else {
+		null_count++;
+		fprintf(fd, "null%d [shape=none, style=invisible];\n", null_count);
+		fprintf(fd, "%d -> null%d;\n", e->value, null_count);
+	}
+	return 0;
+}
+
+int create_dotfile(struct treap *t)  {
+	/* Write new Header*/
+	FILE *fd=fopen("tree.dot", "w");
+	printf("No File yet. Writing Header to File!\n");
+	fprintf(fd, "digraph treap {\n");
+	fprintf(fd, "node [shape=circle, fontname=\"Arial\"];\n");
+	build_dottree(fd, t->root);
+	fprintf(fd, "}");
 	return 0;
 }

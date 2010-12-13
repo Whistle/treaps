@@ -11,7 +11,7 @@ $(PROG): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 clean:
-	rm -rf $(PROG) $(OBJS)
+	rm -rf $(PROG) $(OBJS) 
 
 .PHONY: all clean
 
