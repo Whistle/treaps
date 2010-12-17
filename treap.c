@@ -9,7 +9,7 @@ int main (int argc, char **argv)
 	int i=0;
 	int r=0;
 	srand(time(0));
-	for(i=1; i<= 20; i++) {
+	for(i=1; i<= 5; i++) {
 		r=rand()%30+1;
 		insert(&T, i, r);
 	}
