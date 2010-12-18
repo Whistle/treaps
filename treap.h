@@ -1,20 +1,20 @@
 int null_count=0;
 
-struct treape {
+struct treap_node {
 	int value;
-	int prior;
-	struct treape *parent;
-	struct treape *left;
-	struct treape *right;
+	int priority;
+	struct treap_node *parent;
+	struct treap_node *left;
+	struct treap_node *right;
 };
 
 struct treap{
-	struct treape *root;
+	struct treap_node *root;
 };
 
 
 /* Hilffunktionen */
-int is_leaf(struct treape *e) {
+int is_leaf(struct treap_node *e) {
 	if(e==0)
 		return -1;
 	if(e->left || e->right)
@@ -22,7 +22,7 @@ int is_leaf(struct treape *e) {
 	return 1;
 }
 
-int is_left_child(struct treape *e) {
+int is_left_child(struct treap_node *e) {
 	if(e==0 || e->parent==0)
 		return -1;
 	if(e == e->parent->left)
@@ -31,7 +31,7 @@ int is_left_child(struct treape *e) {
 		return 0;
 }
 
-int has_brother(struct treape *e) {
+int has_brother(struct treap_node *e) {
 	if(e==0)
 		return 0;
 	if(e->parent==0)
@@ -43,10 +43,10 @@ int has_brother(struct treape *e) {
 	return 0;
 }
 
-int lrotate(struct treap *t, struct treape *e) {
-	struct treape *parent=e->parent;
-	struct treape *child=e->right;
-	struct treape *two=child->left;
+int lrotate(struct treap *t, struct treap_node *e) {
+	struct treap_node *parent=e->parent;
+	struct treap_node *child=e->right;
+	struct treap_node *two=child->left;
 
 	printf("Rotiere nach links\n");
 
@@ -68,10 +68,10 @@ int lrotate(struct treap *t, struct treape *e) {
 	return 0;
 }
 
-int rrotate(struct treap *t, struct treape *e) {
-	struct treape *parent=e->parent;
-	struct treape *child=e->left;
-	struct treape *two=child->right;
+int rrotate(struct treap *t, struct treap_node *e) {
+	struct treap_node *parent=e->parent;
+	struct treap_node *child=e->left;
+	struct treap_node *two=child->right;
 
 	printf("Rotiere nach rechts\n");
 
@@ -94,17 +94,17 @@ int rrotate(struct treap *t, struct treape *e) {
 }
 /* Einfache Ausgabe des Baumes */
 
-int show(struct treape *e) {
+int show(struct treap_node *e) {
 	if(e==0)
 		return 0;
 	show(e->left);
-	printf("Adress: 0x%x Value: %d Priority: %2d ParentAdr: 0x%x\n", (int)e, e->value, e->prior, (int)e->parent);
+	printf("Adress: 0x%x Value: %d priorityity: %2d ParentAdr: 0x%x\n", (int)e, e->value, e->priority, (int)e->parent);
 	show(e->right);
 	return 0;
 }
 
-struct treape *find(struct treap *t, int value) {
-	struct treape *e=0;
+struct treap_node *find(struct treap *t, int value) {
+	struct treap_node *e=0;
 	if(t ==0)
 		return 0;
 	e=t->root;
@@ -120,13 +120,13 @@ struct treape *find(struct treap *t, int value) {
 }
 
 int delete(struct treap *t, int value) {
-	struct treape *e=find(t,value);
+	struct treap_node *e=find(t,value);
 	if(e==0)
 		return 0;
 	printf("Loesche die %d\n", value);
 	while(is_leaf(e)==0) {
 		if(e->left && e->right) {
-			if(e->left->prior > e->right->prior) {
+			if(e->left->priority > e->right->priority) {
 				rrotate(t, e);
 			} else {
 				lrotate(t, e);
@@ -147,8 +147,8 @@ int delete(struct treap *t, int value) {
 	return 0;
 }
 
-int adjust_position(struct treap *t, struct treape *e) {
-	while(e->prior > e->parent->prior) {
+int adjust_position(struct treap *t, struct treap_node *e) {
+	while(e->priority > e->parent->priority) {
 		if(is_left_child(e))
 			rrotate(t, e->parent);
 		else
@@ -162,13 +162,13 @@ int adjust_position(struct treap *t, struct treape *e) {
 	return 0;
 }
 
-int insert(struct treap *t, int value, int prior) {
-	struct treape *e=t->root;
-	struct treape *newe=(struct treape *)malloc(sizeof(struct treape));
+int insert(struct treap *t, int value, int priority) {
+	struct treap_node *e=t->root;
+	struct treap_node *newe=(struct treap_node *)malloc(sizeof(struct treap_node));
 	if(newe==0)
 		return -1;
 	newe->value=value;
-	newe->prior=prior;
+	newe->priority=priority;
 	newe->parent=newe->left=newe->right=0;
 	if(t->root==0) {
 		t->root=newe;
@@ -205,7 +205,7 @@ int insert(struct treap *t, int value, int prior) {
 	return 0;
 }
 
-int build_dottree(FILE *fd, struct treape *e) {
+int build_dottree(FILE *fd, struct treap_node *e) {
 	if(fd==0)
 		return -1;
 	if(e==0) {
