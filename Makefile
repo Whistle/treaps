@@ -1,17 +1,14 @@
 CC := gcc
-CFLAGS := -g -Wall -pedantic -O3
-LDFLAGS :=
+CFLAGS := -Wall -pedantic -O3
 
-PROG := treap
-OBJS := treap.o
-
-all: $(PROG)
-
-$(PROG): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
-
+default: treap.o bsp.o 
+	$(CC) $(CFLAGS) -o treap treap.o bsp.o
+treap.o: treap.c treap.h
+	$(CC) $(CFLAGS) -c treap.c
+bsp.o: bsp.c treap.h
+	$(CC) $(CFLAGS) -c bsp.c
 clean:
-	rm -rf $(PROG) $(OBJS) 
+	rm -rf *.o 
 
 .PHONY: all clean
 
