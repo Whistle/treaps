@@ -169,9 +169,10 @@ int delete(struct treap *t, int value) {
 int adjust_position(struct treap *t, struct treap_node *e) {
 	while(e->priority >= e->parent->priority) {
 		if(e->priority == e->parent->priority) {
-			printf("Uups. Prioritaeten duerfen nicht doppelt vergeben werden!\n");
+			/* printf("Uups. Prioritaeten duerfen nicht doppelt vergeben werden!\n");
 			delete(t,e->value);		
-			return 1;
+			return 1;*/
+			return 0;
 		}
 
 		if(is_left_child(e))
