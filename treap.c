@@ -1,7 +1,4 @@
-#ifndef TREAP_H
-#define TREAP_H
 #include "treap.h"
-#endif
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -23,18 +20,6 @@ int is_left_child(struct treap_node *e) {
 		return 1;
 	else
 		return 0;
-}
-
-int has_brother(struct treap_node *e) {
-	if(e==0)
-		return 0;
-	if(e->parent==0)
-		return 0;
-	if(is_left_child(e) && e->parent->right!=0)
-		return 1;
-	if(!is_left_child(e) && e->parent->left!=0)
-		return 1;
-	return 0;
 }
 
 void print_smallest(struct treap *t) {
@@ -143,6 +128,8 @@ int delete(struct treap *t, int value) {
 	if(e==0)
 		return 0;
 	printf("Loesche die %d\n", value);
+
+	/* Blatt werden */
 	while(is_leaf(e)==0) {
 		if(e->left && e->right) {
 			if(e->left->priority > e->right->priority) {
@@ -156,6 +143,8 @@ int delete(struct treap *t, int value) {
 			lrotate(t, e);
 		}
 	}
+
+	/* Pointer des Vaterknotens nullen und den Knoten loeschen */
 	if(is_left_child(e)) {
 		e->parent->left=0;
 		free(e);
@@ -169,9 +158,6 @@ int delete(struct treap *t, int value) {
 int adjust_position(struct treap *t, struct treap_node *e) {
 	while(e->priority >= e->parent->priority) {
 		if(e->priority == e->parent->priority) {
-			/* printf("Uups. Prioritaeten duerfen nicht doppelt vergeben werden!\n");
-			delete(t,e->value);		
-			return 1;*/
 			return 0;
 		}
 

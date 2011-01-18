@@ -1,0 +1,9 @@
+#!/bin/bash
+if [ -f tree.dot ]
+then
+	if [ -f tree.svg ]
+	then 
+		rm tree.svg
+	fi
+	dot tree.dot -Tsvg -o tree.svg
+fi
