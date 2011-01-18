@@ -10,5 +10,5 @@ bsp.o: bsp.c treap.h
 clean:
 	rm -rf *.o 
 
-.PHONY: all clean
+.PHONY: clean
 
